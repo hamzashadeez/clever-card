@@ -1,13 +1,18 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
 import { hp } from "../../constants/Responsive";
 import { Button, TextInput } from "react-native-paper";
 import { themeColors } from "../../constants/Colors";
+import { goToPage } from "../index";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase";
+import { useRouter } from "expo-router";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -15,11 +20,20 @@ const Login = () => {
       return;
     }
     setLoading(true);
-    try {
-    } catch (error) {
-      console.log(error);
-    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        setLoading(false);
+        router.push("/dashboard/home");
+      })
+      .catch((error: any) => {
+        console.log(error.message);
+        Alert.alert("Login Error", error.message);
+        setLoading(false);
+      });
   };
+
+
+  
   return (
     <View
       style={{
@@ -56,12 +70,12 @@ const Login = () => {
       >
         LOGIN
       </Button>
-      <View style={{flex: 1, justifyContent: "flex-end", paddingBottom: 20}}>
-        <View style={{flexDirection: 'row', gap: 5}}>
-            <Text>Are you new here?</Text>
-            <TouchableOpacity>
-                <Text style={{color: themeColors.primary}}>Sign Up</Text>
-            </TouchableOpacity>
+      <View style={{ flex: 1, justifyContent: "flex-end", paddingBottom: 20 }}>
+        <View style={{ flexDirection: "row", gap: 5 }}>
+          <Text>Are you new here?</Text>
+          <TouchableOpacity onPress={() => goToPage("register")}>
+            <Text style={{ color: themeColors.primary }}>Sign Up</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

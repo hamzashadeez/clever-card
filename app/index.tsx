@@ -5,10 +5,11 @@ import { hp, wp } from "../constants/Responsive";
 import { themeColors } from "../constants/Colors";
 import { router } from "expo-router";
 
+export const goToPage = (pageName: any) => {
+  router.push(pageName);
+};
+
 export default function Index() {
-  const goToPage = (pageName: any) => {
-    router.push(pageName);
-  };
   return (
     <View
       style={{
